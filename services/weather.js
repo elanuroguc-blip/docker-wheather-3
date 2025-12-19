@@ -1,5 +1,23 @@
-export async function getWeather(lat, lon) {
-const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-const res = await fetch(url);
-return await res.json();
+/**
+ * Rastgele bir köpek resmi URL'si çeker.
+ */
+export async function getRandomDogImage() {
+    const url = "https://dog.ceo/api/breeds/image/random";
+
+    try {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error("Köpek resmi alınamadı.");
+        }
+
+        const data = await response.json();
+        
+        // API { message: "URL", status: "success" } şeklinde bir obje döndürür
+        return data.message; 
+
+    } catch (error) {
+        console.error("Dog API Hatası:", error);
+        return null;
+    }
 }
