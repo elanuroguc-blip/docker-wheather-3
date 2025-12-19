@@ -5,7 +5,7 @@ import { getCountry } from './services/country.js';
 
 async function loadDashboard() {
 const weather = await getWeather(41.01, 28.97); // İstanbul
-const time = await getTime('Europe/Istanbul');
+//const time = await getTime('Europe/Istanbul');
 const country = await getCountry('TR');
 
 
@@ -28,8 +28,7 @@ weatherCard.innerHTML = `
 
 document.getElementById('time-card').innerHTML = `
 <h3>🕒 Yerel Saat</h3>
-<p>${time.datetime.substring(11, 19)}</p>
-<p>${time.timezone}</p>
+<p>${time.datetime.substring(11, 19)}Servis Geçici Olarak Kullanılmıyor.</p>
 `;
 
 
