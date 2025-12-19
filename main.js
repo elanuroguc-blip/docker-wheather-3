@@ -1,44 +1,51 @@
-import { getWeather } from './services/weather.js';
-import { getTime } from './services/time.js';
-import { getCountry } from './services/country.js';
-
+import { getCurrentTime } from './services/time.js';
+import { getCountryData } from './services/country.js';
+import { getRandomDogImage } from './services/weather.js'; // Köpek API'sini weather.js içine koyduğun için buradan çağırıyoruz
 
 async function loadDashboard() {
-const weather = await getWeather(41.01, 28.97); // İstanbul
-//const time = await getTime('Europe/Istanbul');
-const country = await getCountry('TR');
+    // 1. Verileri Çekelim
+    // 'Europe/Istanbul' ve 'Turkey' değerlerini manuel verdik, istersen dinamik yapabilirsin
+    const time = await getCurrentTime('Europe/Istanbul');
+    const country = await getCountryData('Turkey');
+    const dogImgUrl = await getRandomDogImage();
 
+    // 2. Saat Kartını Güncelleyelim
+    const timeCard = document.getElementById('time-card');
+    if (timeCard && time) {
+        timeCard.innerHTML = `
+            <h3>Yerel Saat</h3>
+            <p>Saat: ${time.time}</p>
+            <p>Tarih: ${time.date}</p>
+            <p style="font-size: 0.8rem; color: gray;">Bölge: ${time.timezone}</p>
+        `;
+    }
 
-const weatherCard = document.getElementById('weather-card');
-const temp = weather.current_weather.temperature;
-const wind = weather.current_weather.windspeed;
+    // 3. Ülke Bilgisi Kartını Güncelleyelim
+    const countryCard = document.getElementById('country-card');
+    if (countryCard && country) {
+        countryCard.innerHTML = `
+            <h3>Ülke Bilgisi</h3>
+            <div style="text-align: center; margin-bottom: 10px;">
+                <img src="${country.flag}" width="100" style="border: 1px solid #ddd; border-radius: 4px;" />
+            </div>
+            <p><strong>Ülke:</strong> ${country.name}</p>
+            <p><strong>Başkent:</strong> ${country.capital}</p>
+            <p><strong>Nüfus:</strong> ${country.population}</p>
+        `;
+    }
 
-
-let weatherClass = 'weather-sunny';
-if (wind > 20) weatherClass = 'weather-wind';
-
-
-weatherCard.classList.add(weatherClass);
-weatherCard.innerHTML = `
-<h3>☀️ Hava Durumu</h3>
-<p>Sıcaklık: ${temp}°C</p>
-<p>Rüzgar: ${wind} km/h</p>
-`;
-
-
-document.getElementById('time-card').innerHTML = `
-<h3>🕒 Yerel Saat</h3>
-<p>${time.datetime.substring(11, 19)}Servis Geçici Olarak Kullanılmıyor.</p>
-`;
-
-
-document.getElementById('country-card').innerHTML = `
-<h3>🏳️ Ülke Bilgisi</h3>
-<img src="${country[0].flags.png}" width="80" />
-<p>${country[0].name.common}</p>
-<p>Para Birimi: ${Object.keys(country[0].currencies)[0]}</p>
-`;
+    // 4. Köpek Kartını Güncelleyelim
+    const dogCard = document.getElementById('weather-card'); // Hava durumu kartı yerine köpek resmini buraya koyalım
+    if (dogCard && dogImgUrl) {
+        dogCard.innerHTML = `
+            <h3>Günün Köpeği</h3>
+            <div style="text-align: center;">
+                <img src="${dogImgUrl}" style="max-width: 100%; border-radius: 10px; margin-top: 10px;" />
+            </div>
+            <p style="font-size: 0.8rem; text-align: center; color: gray;">Rastgele Köpek API'den çekildi.</p>
+        `;
+    }
 }
 
-
+// Uygulamayı başlat
 loadDashboard();
